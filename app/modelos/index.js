@@ -25,6 +25,7 @@ bd.usuario = require("../modelos/usuario.model.js")(sequelize, Sequelize);
 bd.rol = require("../modelos/rol.model.js")(sequelize, Sequelize);
 bd.equipo = require("../modelos/equipo.model.js")(sequelize, Sequelize);
 bd.serie = require("../modelos/serie.model.js")(sequelize,Sequelize);
+bd.video = require("../modelos/video.model.js")(sequelize,Sequelize);
 bd.rol.hasMany(bd.usuario, {
   foreignKey: 'roleId'
 });
@@ -40,5 +41,21 @@ bd.equipo.hasMany(bd.usuario, {
 });
 bd.usuario.belongsTo(bd.equipo);
 
+bd.usuario.hasMany(bd.video, {
+  foreignKey:'usuarioId'
+});
+
+bd.video.belongsTo(bd.usuario);
+
+bd.equipo.belongsToMany(bd.video, {
+  through: "equipo_videos",
+  foreignKey: "equipoId",
+  otherKey: "videoId"
+});
+bd.video.belongsToMany(bd.equipo, {
+  through: "equipo_videos",
+  foreignKey: "videoId",
+  otherKey: "equipoId"
+});
 bd.ROLES = [1, 2, 3];
 module.exports = bd;

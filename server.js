@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
+bodyParser = require('body-parser');
 const app = express();
+
+
 var corsOptions = {
   origin: "http://localhost:4200"
 };
@@ -9,6 +12,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
 const bd = require("./app/modelos");
 const Rol = bd.rol;
@@ -50,9 +58,11 @@ app.get("/", (req, res) => {
   res.json({ message: "Bienvenido a la aplicacion"});
 });
 
+
 require('./app/rutas/auth.routes')(app);
 require('./app/rutas/usuario.routes')(app);
 require('./app/rutas/equipo.routes')(app);
+require('./app/rutas/video.routes')(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

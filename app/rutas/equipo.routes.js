@@ -14,7 +14,7 @@ module.exports = function(app) {
     );
 
     app.get("/api/serie/listar",
-    [authJwt.verificarToken, authJwt.esAdministrador],
+    [authJwt.verificarToken, authJwt.esAdministradorOUsuario],
     controlador.listarSeries
     );
  

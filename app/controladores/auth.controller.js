@@ -73,6 +73,7 @@ exports.singin = (req, res) => {
                  genero: usuario.genero,
                  email: usuario.email,
                  rolusuario: rol,
+                 equipoId: usuario.equipoId,
                  accessToken: token
              });
          
