@@ -25,8 +25,7 @@ exports.crearEquipo = (req, res) => {
 exports.listarSeries = (req, res) => {
     Serie.findAll()
     .then(data => {
-      res.send(data);
-      
+      res.send(data); 
     })
     .catch(err => {
       res.status(500).send({

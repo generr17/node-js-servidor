@@ -4,7 +4,9 @@ module.exports = (sequelize, Sequelize) => {
      url : {
         type: Sequelize.STRING
       },
-     
+     imagen: {
+      type: Sequelize.STRING
+     }
     });
     return Video;
   };

@@ -46,10 +46,10 @@ exports.singin = (req, res) => {
              req.body.clave,
              usuario.clave
          );
-         if (!claveValida) {
+         if (!claveValida || !req.body.email) {
              return res.status(401).send({
                  accessToken: null,
-                 message: "Contraseña incorrecta"
+                 message: "Correo o Contraseña incorrecta"
              });
          }
          var token = jwt.sign({ id: usuario.id}, configuracion.secret, {

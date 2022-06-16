@@ -18,9 +18,14 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
+
+
 const bd = require("./app/modelos");
 const Rol = bd.rol;
 const Serie = bd.serie;
+const Usuario = bd.usuario;
+const Equipo = bd.equipo;
+
 
 const dbConfig = require("./app/configuracion/db.config");
 const controlador = require("./app/controladores/usuario.controller");
@@ -53,10 +58,13 @@ function inicio() {
   Serie.create({
     nombre: "B"
   });
+
 }
 app.get("/", (req, res) => {
   res.json({ message: "Bienvenido a la aplicacion"});
 });
+
+
 
 
 require('./app/rutas/auth.routes')(app);

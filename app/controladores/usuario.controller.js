@@ -65,6 +65,24 @@ exports.actualizar= (req, res) => {
    
 }
 
+exports.obtenerUsuario= (req, res)=> {
+    const id = req.params.id;
+   Usuario.findByPk(id)
+   .then((user) => {
+    if(user){
+        res.send(user);
+    }else{
+        res.status(404).send({
+            message: "No se puede encontrar el usuario"
+        });
+    }
+   })
+   .catch((err) => {
+    res.status(500).send({
+        message: "Error al recuperar el usuario" + err.message
+    });
+   });
+};
 
 exports.usuarioAdministrador = (req, res) => {
     res.status(200).send("Contenido Administrador");

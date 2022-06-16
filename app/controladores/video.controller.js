@@ -8,6 +8,8 @@ const Op = bd.Sequelize.Op;
 const fs = require('fs');
 const Sequelize = require("sequelize");
 const dbConfig = require("../configuracion/db.config.js");
+
+
 const sequelize = new Sequelize(
   configurac.DB,
   configurac.USER,
@@ -28,6 +30,7 @@ const sequelize = new Sequelize(
 exports.guardar = (req, res) => {
     Video.create({
         url:req.body.url,
+        imagen: req.body.imagen,
         usuarioId: req.body.usuarioId,      
     })
     .then(video => {
@@ -55,7 +58,7 @@ exports.guardar = (req, res) => {
 };
 
 exports.reproducirVideo = (req, res) => {
-    const path = './videos/'+req.body.url
+    const path = './videos/'+req.params.url
     const stat  = fs.statSync(path)
     const fileSize = stat.size
     const range = req.headers.range
@@ -93,7 +96,7 @@ exports.reproducirVideo = (req, res) => {
 
 exports.listarVideos = (req, res) => {
   const idEquipo = req.params.equipoId;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, v.url, v.createdAt
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt
                     FROM equipo_videos ev JOIN videos v
                     ON ev.videoId = v.id
                     JOIN usuarios u 
@@ -114,3 +117,4 @@ exports.listarVideos = (req, res) => {
       });
     });
 };
+

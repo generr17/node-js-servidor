@@ -29,4 +29,9 @@ module.exports = function(app) {
     [authJwt.verificarToken, authJwt.estaLogeado],
         controlador.actualizar
     ); 
+
+    app.get("/api/test/obtener/:id",
+    [authJwt.verificarToken, authJwt.estaLogeado],
+    controlador.obtenerUsuario
+    );
 };
