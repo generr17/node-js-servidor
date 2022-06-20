@@ -48,8 +48,8 @@ module.exports = function(app) {
             const url=req.file.filename;
             console.log(req.file.path);
              let videoUrl =req.file.path;
-             const filename = Date.now() + `-imagen`;
-                   ffmpegCommand(videoUrl)
+             const filename =Date.now() + `-imagen`;
+             var im  =  ffmpegCommand(videoUrl)
                     .seekInput("00:00:30.000")
                     .outputOptions([
                         "-q:v",
@@ -61,7 +61,7 @@ module.exports = function(app) {
                         "-qscale",
                         "50",
                         "-vf",
-                        "fps=1/10,scale=300:250,tile=1x1",
+                        "fps=1/10,scale=500:300,tile=1x1",
                     ])
                     .addOption("-preset", "superfast")
                     .on("error", (err) => {
@@ -71,13 +71,11 @@ module.exports = function(app) {
 
                     .save(`./imagenes/${filename}.png`);
                      
-                console.log(ffmpegCommand);      
-                    
                    
             return res.send({
                 success: true,
                 message: url,
-                imagenUrl:filename + ".png"
+                imagenUrl:`${filename}.png`
             });
             
          
@@ -95,6 +93,9 @@ module.exports = function(app) {
     
     app.get('/api/video/reproducir/:url',
     controlador.reproducirVideo);
+
+     app.get('/api/mostrarImagen/:img', function(req, res){
+     res.sendFile( __dirname+`/imagenes/${img}` );});
    
     
 };

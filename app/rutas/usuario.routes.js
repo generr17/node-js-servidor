@@ -32,6 +32,6 @@ module.exports = function(app) {
 
     app.get("/api/test/obtener/:id",
     [authJwt.verificarToken, authJwt.estaLogeado],
-    controlador.obtenerUsuario
+    controlador.obtenerUsuarioPorId
     );
 };

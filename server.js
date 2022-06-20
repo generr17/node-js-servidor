@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-
+app.use(express.static('imagenes'));
 
 const bd = require("./app/modelos");
 const Rol = bd.rol;

@@ -94,3 +94,23 @@ exports.usuarioComun = (req, res) => {
 exports.usuarioDirectivo = (req, res) => {
     res.status(200).send("Contenido directivo");
 };
+
+exports.obtenerUsuarioPorId = (req, res) => {
+    const id = req.params.id;
+    Usuario.findByPk(id)
+      .then((usuario) => {
+        if (usuario) {
+          res.send(usuario);
+        } else {
+          res.status(404).send({
+            message:" No se puede encontrar el usuario",
+          });
+          return;
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: "Error al recuperar el producto con la id: " + id,
+        });
+      });
+  };
