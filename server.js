@@ -72,6 +72,7 @@ require('./app/rutas/usuario.routes')(app);
 require('./app/rutas/equipo.routes')(app);
 require('./app/rutas/video.routes')(app);
 
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

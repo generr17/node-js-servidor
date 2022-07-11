@@ -8,6 +8,9 @@
       },
       telefono: {
         type: Sequelize.STRING
+      },
+      precio: {
+        type: Sequelize.FLOAT 
       }
     });
     return Equipo;
