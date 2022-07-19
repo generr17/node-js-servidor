@@ -34,4 +34,24 @@ module.exports = function(app) {
     [authJwt.verificarToken, authJwt.estaLogeado],
     controlador.obtenerUsuarioPorId
     );
+
+    app.get("/api/test/obtenerHabilidades",
+    [authJwt.verificarToken, authJwt.estaLogeado],
+    controlador.listarHabilidades
+    );
+
+    app.get("/api/test/obtenerHabilidadesUsuario/:id",
+    [authJwt.verificarToken, authJwt.estaLogeado],
+    controlador.listarHabilidadesPorUsuario
+    );
+
+    app.get("/api/test/contarHabilidadesUsuario/:id",
+    [authJwt.verificarToken, authJwt.estaLogeado],
+    controlador.contarHabilidades
+    );
+
+    app.post("/api/test/guardarHabilidades",
+    [authJwt.verificarToken, authJwt.estaLogeado],
+    controlador.guardar
+    );
 };

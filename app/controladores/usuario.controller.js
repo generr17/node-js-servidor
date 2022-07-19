@@ -2,7 +2,31 @@ const bd = require("../modelos");
 const Rol = bd.Rol;
 const Usuario = bd.usuario;
 const Op = bd.Sequelize.Op;
+const Habilidad = bd.habilidad;
+const UsuarioHabilidad = bd.usuario_habilidad;
 var bcrypt = require("bcryptjs");
+const Sequelize = require("sequelize");
+const configurac = require("../configuracion/db.config.js");
+const { habilidad } = require("../modelos");
+
+
+
+const sequelize = new Sequelize(
+    configurac.DB,
+    configurac.USER,
+    configurac.PASSWORD,
+    {
+      host: configurac.HOST,
+      dialect: configurac.dialect,
+      operatorsAliases: false,
+      pool: {
+        max: configurac.pool.max,
+        min: configurac.pool.min,
+        acquire: configurac.pool.acquire,
+        idle: configurac.pool.idle
+      }
+    }
+  );
 
 
 exports.actualizar= (req, res) => {
@@ -114,3 +138,84 @@ exports.obtenerUsuarioPorId = (req, res) => {
         });
       });
   };
+
+exports.listarHabilidades = (req, res) => {
+    Habilidad.findAll()
+    .then(data => {
+      
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: 
+        err.message || "Error al encontrar los datos"
+      });
+    });
+  };
+
+exports.listarHabilidadesPorUsuario = (req, res) => {
+    const idUsuario = req.params.id;
+    sequelize.query(`SELECT  h.nombre
+                        FROM usuario_habilidad uh JOIN usuarios u
+                        ON uh.usuarioId= u.id
+                        JOIN habilidads h 
+                        ON  h.id = uh.habilidadId
+                        AND u.id = 
+              ` + idUsuario, {
+        type: Sequelize.QueryTypes.SELECT,
+      })
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message ||
+            "Error al obtener las habilidades del usuario",
+        });
+      });
+  };
+
+  exports.contarHabilidades = (req, res) => {
+    const idUsuario = req.params.id;
+    sequelize.query(`SELECT  COUNT(h.nombre) as total
+                        FROM usuario_habilidads uh JOIN usuarios u
+                        ON uh.usuarioId= u.id
+                        JOIN habilidads h 
+                        ON  h.id = uh.habilidadId
+                        AND u.id =
+              ` + idUsuario, {
+        type: Sequelize.QueryTypes.SELECT,
+      })
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message ||
+            "Error al contar las habilidades del usuario",
+        });
+      });
+  };
+
+
+exports.guardar =(req, res) => {
+  console.log(req.body.habilidades);
+ 
+  var data = [];
+  let i=0;
+  req.body.habilidades.forEach(element => {
+    data[i] = {
+      'usuarioId': req.body.usuarioId,
+      'habilidadId': element
+    }
+    i++;
+  });
+  UsuarioHabilidad.bulkCreate(data, {individualHooks: true}).then((usuariohabilidad) => {
+    res.send({message: "Habilidades registradas satisfactriamente"});
+  })
+  .catch((err) => {
+    console.log(">> Error mientras se guardaban las habilidades: ", err);
+  });
+}

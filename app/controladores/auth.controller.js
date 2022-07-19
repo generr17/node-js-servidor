@@ -17,7 +17,8 @@ exports.signup = (req, res) => {
         email: req.body.email,
         clave: bcrypt.hashSync(req.body.clave, 8),
         roleId: req.body.roleId,
-        equipoId: req.body.equipoId
+        equipoId: req.body.equipoId,
+        suscrito: 0
         
     })
     .then((usuario) => {

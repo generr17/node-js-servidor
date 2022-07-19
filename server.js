@@ -23,8 +23,8 @@ app.use(express.static('imagenes'));
 const bd = require("./app/modelos");
 const Rol = bd.rol;
 const Serie = bd.serie;
-const Usuario = bd.usuario;
-const Equipo = bd.equipo;
+const Habilidad = bd.habilidad;
+const Suscripcion = bd.suscripcion;
 
 
 const dbConfig = require("./app/configuracion/db.config");
@@ -59,6 +59,55 @@ function inicio() {
     nombre: "B"
   });
 
+  Habilidad.create({
+    nombre: "Dominio del balón"
+  });
+
+  Habilidad.create({
+    nombre: "Dominio del cuerpo"
+  });
+
+  Habilidad.create({
+    nombre: "Rapidez"
+  });
+
+  Habilidad.create({
+    nombre: "Resistencia"
+  });
+
+  Habilidad.create({
+    nombre: "Coordinación"
+  });
+
+  Habilidad.create({
+    nombre: "Disciplina"
+  });
+
+  Habilidad.create({
+    nombre: "Equilibrio"
+  });
+  
+
+  Suscripcion.create({
+    nombre: "Mensual",
+    descripcion: "Visualiza videos ilimitados por un mes",
+    nota: "Se renueva cada mes",
+    precio: 20.00
+  });
+
+  Suscripcion.create({
+    nombre: "Semestral",
+    descripcion: "Visualiza videos ilimitados por un 6 meses",
+    nota: "Se renueva cada 6 meses",
+    precio: 50.50
+  });
+
+  Suscripcion.create({
+    nombre: "Anual",
+    descripcion: "Visualiza videos ilimitados por un año",
+    nota: "Se renueva cada año",
+    precio: 90.75
+  });
 }
 app.get("/", (req, res) => {
   res.json({ message: "Bienvenido a la aplicacion"});

@@ -25,6 +25,9 @@ module.exports = (sequelize, Sequelize) => {
       clave: {
         type: Sequelize.STRING
       },
+      suscrito: {
+        type: Sequelize.INTEGER
+      }
     });
     return Usuario;
   };

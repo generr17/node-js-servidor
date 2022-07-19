@@ -4,6 +4,7 @@ const configurac = require("../configuracion/db.config.js");
 const { path } = require("express/lib/application");
 const Video = bd.video;
 const Equipo = bd.equipo;
+const Suscripcion = bd.suscripcion;
 const Op = bd.Sequelize.Op;
 const fs = require('fs');
 const Sequelize = require("sequelize");
@@ -117,4 +118,18 @@ exports.listarVideos = (req, res) => {
       });
     });
 };
+
+exports.listarSuscripciones = (req, res) => {
+  Suscripcion.findAll()
+  .then(data => {
+    
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: 
+      err.message || "Error al encontrar los datos"
+    });
+  });
+}
 

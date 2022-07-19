@@ -26,6 +26,10 @@ bd.rol = require("../modelos/rol.model.js")(sequelize, Sequelize);
 bd.equipo = require("../modelos/equipo.model.js")(sequelize, Sequelize);
 bd.serie = require("../modelos/serie.model.js")(sequelize,Sequelize);
 bd.video = require("../modelos/video.model.js")(sequelize,Sequelize);
+bd.habilidad = require("../modelos/habilidad.model.js")(sequelize, Sequelize);
+bd.usuario_habilidad = require("../modelos/usuario_habilidad.model.js")(sequelize, Sequelize);
+bd.suscripcion = require("../modelos/suscripcion.model.js")(sequelize, Sequelize);
+bd.usuario_suscripcion = require("../modelos/usuario_suscripcion.model.js")(sequelize, Sequelize);
 bd.rol.hasMany(bd.usuario, {
   foreignKey: 'roleId'
 });
@@ -57,5 +61,30 @@ bd.video.belongsToMany(bd.equipo, {
   foreignKey: "videoId",
   otherKey: "equipoId"
 });
+
+bd.usuario.hasMany(bd.usuario_habilidad, {
+  foreignKey:'usuarioId'
+});
+
+bd.usuario_habilidad.belongsTo(bd.usuario);
+
+bd.habilidad.hasMany(bd.usuario_habilidad, {
+  foreignKey:'habilidadId'
+});
+
+bd.usuario_habilidad.belongsTo(bd.habilidad);
+
+bd.usuario.hasMany(bd.usuario_suscripcion, {
+  foreignKey:'usuarioId'
+});
+
+bd.usuario_suscripcion.belongsTo(bd.usuario);
+
+bd.suscripcion.hasMany(bd.usuario_suscripcion, {
+  foreignKey: 'suscripcionId'
+});
+bd.usuario_suscripcion.belongsTo(bd.suscripcion);
+
 bd.ROLES = [1, 2, 3];
+
 module.exports = bd;

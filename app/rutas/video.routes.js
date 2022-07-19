@@ -96,7 +96,10 @@ module.exports = function(app) {
 
      app.get('/api/mostrarImagen/:img', function(req, res){
      res.sendFile( __dirname+`/imagenes/${img}` );});
-   
+    
+     app.get('/obtenerSuscripciones', 
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.listarSuscripciones);
     
 };
 
