@@ -219,3 +219,32 @@ exports.guardar =(req, res) => {
     console.log(">> Error mientras se guardaban las habilidades: ", err);
   });
 }
+
+exports.actualizarEstadoSuscripcion= (req, res) => {
+  const id = req.params.id;
+  if(!req.body.clave){
+  
+      Usuario.update(
+          {
+              suscrito: req.body.suscrito
+          },
+          {where: { id:id}}
+      )
+      .then((num) => {
+          if(num == 1) {
+              res.send({
+                  message: "Usuario actualizado correctamente",
+              });
+          }else {
+              res.send({
+                  message: "No se puede actualizar el usuario",
+              });
+          }
+         })
+          .catch((err) => {
+          console.log(">> Error mientras se actualizaba el usuario: ", err);
+          res.status(500).send({message: err.message});
+      });
+  }
+ 
+}

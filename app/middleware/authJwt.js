@@ -7,7 +7,7 @@ verificarToken = (req, res, next) => {
     jwt.verify(token, configuracion.secret, (err, decoded) => {
         if(err)
          {
-                return res.status(401).send({
+             return res.status(401).send({
                  message: "No autorizado"
              });
         }

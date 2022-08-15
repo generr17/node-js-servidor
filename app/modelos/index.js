@@ -30,6 +30,9 @@ bd.habilidad = require("../modelos/habilidad.model.js")(sequelize, Sequelize);
 bd.usuario_habilidad = require("../modelos/usuario_habilidad.model.js")(sequelize, Sequelize);
 bd.suscripcion = require("../modelos/suscripcion.model.js")(sequelize, Sequelize);
 bd.usuario_suscripcion = require("../modelos/usuario_suscripcion.model.js")(sequelize, Sequelize);
+bd.mensaje = require("../modelos/mensaje.model.js")(sequelize, Sequelize);
+bd.chatRoom = require("../modelos/chat_room.model.js")(sequelize, Sequelize);
+
 bd.rol.hasMany(bd.usuario, {
   foreignKey: 'roleId'
 });
@@ -85,6 +88,30 @@ bd.suscripcion.hasMany(bd.usuario_suscripcion, {
 });
 bd.usuario_suscripcion.belongsTo(bd.suscripcion);
 
+
+//bd.usuario.belongsTo(bd.chatRoom);
+
+bd.usuario.hasMany(bd.chatRoom,{
+  foreignKey: 'usuarioDId'
+});
+
+bd.usuario.hasMany(bd.chatRoom,{
+  foreignKey: 'usuarioUId'
+});
+
+//bd.chatRoom.belongsTo(bd.usuario);
+
+
+bd.usuario.hasMany(bd.mensaje,{
+  foreignKey: 'usuarioId'
+});
+bd.mensaje.belongsTo(bd.usuario);
+
+bd.chatRoom.hasMany(bd.mensaje,{
+  foreignKey: 'chatRoomId'
+});
+bd.mensaje.belongsTo(bd.chatRoom);
 bd.ROLES = [1, 2, 3];
 
 module.exports = bd;
+

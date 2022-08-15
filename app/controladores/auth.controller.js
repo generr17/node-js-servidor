@@ -57,11 +57,11 @@ exports.singin = (req, res) => {
              expiresIn: 86400
          });
              var rol ="";
-             if (usuario.roleId == 1){
+             if (usuario.roleId === 1){
                  rol = "admin";
-             }else if (usuario.roleId == 2){
+             }else if (usuario.roleId === 2){
                 rol = "directivo";
-             }else  if (usuario.roleId == 3){
+             }else  if (usuario.roleId === 3){
                  rol = "usuario";
              }
              res.status(200).send({
@@ -75,6 +75,7 @@ exports.singin = (req, res) => {
                  email: usuario.email,
                  rolusuario: rol,
                  equipoId: usuario.equipoId,
+                 suscrito: usuario.suscrito,
                  accessToken: token
              });
          

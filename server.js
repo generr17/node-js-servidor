@@ -30,11 +30,11 @@ const Suscripcion = bd.suscripcion;
 const dbConfig = require("./app/configuracion/db.config");
 const controlador = require("./app/controladores/usuario.controller");
 
-bd.sequelize.sync({force: true}).then (() => {
+/*bd.sequelize.sync({force: true}).then (() => {
   console.log("Drop and Resync db");
   inicio();
-});
-
+}); */
+bd.sequelize.sync();
 function inicio() {
   Rol.create({
     
@@ -120,7 +120,7 @@ require('./app/rutas/auth.routes')(app);
 require('./app/rutas/usuario.routes')(app);
 require('./app/rutas/equipo.routes')(app);
 require('./app/rutas/video.routes')(app);
-
+require('./app/rutas/mensaje.routes')(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

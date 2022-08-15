@@ -1,6 +1,7 @@
 const {authJwt} = require("../middleware");
 //const { verificarCrearCuenta} = require("../middleware");
 const controlador = require("../controladores/usuario.controller.js");
+const controladorUS = require("../controladores/suscripcion.controller.js");
 module.exports = function(app) {
     app.use(function(req, res, next){
         res.header(
@@ -54,4 +55,13 @@ module.exports = function(app) {
     [authJwt.verificarToken, authJwt.estaLogeado],
     controlador.guardar
     );
+
+    app.put("/api/test/editarEstadoSuscripcion/:id",
+    [authJwt.verificarToken, authJwt.esDirectivo],
+        controlador.actualizarEstadoSuscripcion
+    ); 
+    app.post("/api/test/guardarUsuarioSuscripcion",
+   // [authJwt.verificarToken, authJwt.esDirectivo],
+        controladorUS.guardar
+    ); 
 };
