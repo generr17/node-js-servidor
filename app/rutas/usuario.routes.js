@@ -42,7 +42,7 @@ module.exports = function(app) {
     );
 
     app.get("/api/test/obtenerHabilidadesUsuario/:id",
-    [authJwt.verificarToken, authJwt.estaLogeado],
+    //[authJwt.verificarToken, authJwt.estaLogeado],
     controlador.listarHabilidadesPorUsuario
     );
 

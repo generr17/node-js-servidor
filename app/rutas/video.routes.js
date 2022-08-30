@@ -101,5 +101,17 @@ module.exports = function(app) {
      [authJwt.verificarToken, authJwt.esDirectivo],
      controlador.listarSuscripciones);
     
+     app.get('/api/video/buscarVideos/:equipoId/:texto',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.buscarVideos
+     );
+
+     app.get('/api/video/listarVideos/:usuarioId',
+     [authJwt.verificarToken, authJwt.esUsuarioComun],
+     controlador.listarVideoPorUsuario);
+
+     app.get('/api/video/buscarVideosUsuario/:usuarioId/:texto',
+    
+     controlador.buscarVideoDeUsuario);
 };
 

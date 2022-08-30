@@ -34,4 +34,9 @@ module.exports = function(app) {
     [authJwt.verificarToken, authJwt.estaLogeado],
        controladorMsg.listarMensajes
    ); 
+
+   app.get("/api/contarNuevosMensajes/:id",
+    [authJwt.verificarToken, authJwt.estaLogeado],
+       controladorMsg.contarMensajesNuevos
+   );
 }

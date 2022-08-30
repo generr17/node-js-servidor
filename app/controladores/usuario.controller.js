@@ -156,8 +156,8 @@ exports.listarHabilidades = (req, res) => {
 exports.listarHabilidadesPorUsuario = (req, res) => {
     const idUsuario = req.params.id;
     sequelize.query(`SELECT  h.nombre
-                        FROM usuario_habilidad uh JOIN usuarios u
-                        ON uh.usuarioId= u.id
+                        FROM usuario_habilidads uh JOIN usuarios u
+                        ON uh.usuarioId = u.id
                         JOIN habilidads h 
                         ON  h.id = uh.habilidadId
                         AND u.id = 

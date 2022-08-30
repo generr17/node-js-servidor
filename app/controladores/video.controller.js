@@ -32,7 +32,9 @@ exports.guardar = (req, res) => {
     Video.create({
         url:req.body.url,
         imagen: req.body.imagen,
-        usuarioId: req.body.usuarioId,      
+        titulo: req.body.titulo,
+        descripcion: req.body.descripcion,
+        usuarioId: req.body.usuarioId,
     })
     .then(video => {
         if(req.body.equipos){
@@ -97,7 +99,7 @@ exports.reproducirVideo = (req, res) => {
 
 exports.listarVideos = (req, res) => {
   const idEquipo = req.params.equipoId;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
                     FROM equipo_videos ev JOIN videos v
                     ON ev.videoId = v.id
                     JOIN usuarios u 
@@ -131,5 +133,73 @@ exports.listarSuscripciones = (req, res) => {
       err.message || "Error al encontrar los datos"
     });
   });
+};
+
+exports.buscarVideos = (req, res) => {
+  const idEquipo = req.params.equipoId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+                      FROM equipo_videos ev JOIN videos v
+                      ON ev.videoId = v.id
+                      JOIN usuarios u 
+                      ON  u.id = v.usuarioId
+                      JOIN equipos e ON ev.equipoId = e.id
+                      AND ev.equipoId = ` + idEquipo + 
+                      ` AND u.nombreusuario LIKE '%`+ texto + `%'
+                      OR u.apellidousuario LIKE '%` + texto + `%'
+                      OR v.titulo LIKE '%` + texto + `%'
+                      OR v.descripcion LIKE '%` + texto + `%'
+                       GROUP BY v.id`, {
+      type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Error al obtener los equipos.",
+      });
+    });
+};
+
+exports.listarVideoPorUsuario = (req, res) => {
+  const usuarioId = req.params.usuarioId;
+  Video.findAll({
+    where: {
+      usuarioId: usuarioId
+    }
+  })
+    .then(data => {
+      res.send(data); 
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Error al encontrar los datos"
+        });
+       
+    });
+}
+
+exports.buscarVideoDeUsuario = (req, res) => {
+  const usuarioId = req.params.usuarioId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT id, url, imagen, titulo, descripcion, createdAt  FROM videos  WHERE usuarioId =` + usuarioId +
+                    ` AND titulo LIKE '%` + texto + `%'  OR ` +
+                    ` descripcion LIKE '%` + texto + `%'`, {
+type: Sequelize.QueryTypes.SELECT,
+})
+.then((data) => {
+res.send(data);
+})
+.catch((err) => {
+res.status(500).send({
+message:
+err.message ||
+"No se encontraron videos.",
+});
+});
 }
 

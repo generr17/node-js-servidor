@@ -188,6 +188,28 @@ exports.actualizarEstadoMensaje = (req, res) => {
 }
 
 
+exports.contarMensajesNuevos = (req, res) => {
+  const idUsuario = req.params.id;
+  sequelize.query(`SELECT COUNT(m.id) total
+                    FROM mensajes m JOIN chat_rooms c ON 
+                    m.chatRoomId = c.id 
+                    WHERE ( c.usuarioUId = `+ idUsuario +
+                    ` OR c.usuarioDId = ` + idUsuario + `)
+                    AND m.leido = 0
+                    AND NOT m.usuarioId = ` + idUsuario , {
+        type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+    res.send(data);
+    })
+    .catch((err) => {
+    res.status(500).send({
+    message:
+    err.message ||
+    "Error al obtener los mensajes.",
+    });
+    });
+}
 /* 
 SELECT *
 FROM `chat-rooms` c JOIN mensajes m 

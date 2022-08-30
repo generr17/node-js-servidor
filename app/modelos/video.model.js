@@ -6,6 +6,12 @@ module.exports = (sequelize, Sequelize) => {
       },
      imagen: {
       type: Sequelize.STRING
+     },
+     titulo: {
+      type: Sequelize.STRING
+     },
+     descripcion: {
+      type: Sequelize.STRING
      }
     });
     return Video;
