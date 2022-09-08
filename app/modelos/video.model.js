@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
      },
      descripcion: {
       type: Sequelize.STRING
+     },
+     visto: {
+      type: Sequelize.INTEGER
      }
     });
     return Video;

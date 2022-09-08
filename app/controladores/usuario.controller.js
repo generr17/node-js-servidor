@@ -9,8 +9,6 @@ const Sequelize = require("sequelize");
 const configurac = require("../configuracion/db.config.js");
 const { habilidad } = require("../modelos");
 
-
-
 const sequelize = new Sequelize(
     configurac.DB,
     configurac.USER,

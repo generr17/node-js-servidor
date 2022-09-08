@@ -138,13 +138,71 @@ exports.listarSuscripciones = (req, res) => {
 exports.buscarVideos = (req, res) => {
   const idEquipo = req.params.equipoId;
   const texto = req.params.texto;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.visto
                       FROM equipo_videos ev JOIN videos v
                       ON ev.videoId = v.id
                       JOIN usuarios u 
                       ON  u.id = v.usuarioId
                       JOIN equipos e ON ev.equipoId = e.id
                       AND ev.equipoId = ` + idEquipo + 
+                      ` AND u.nombreusuario LIKE '%`+ texto + `%'
+                      OR u.apellidousuario LIKE '%` + texto + `%'
+                      OR v.titulo LIKE '%` + texto + `%'
+                      OR v.descripcion LIKE '%` + texto + `%'
+                       GROUP BY v.id`, {
+      type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Error al obtener los equipos.",
+      });
+    });
+};
+
+exports.buscarVideosNoVistos = (req, res) => {
+  const idEquipo = req.params.equipoId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+                      FROM equipo_videos ev JOIN videos v
+                      ON ev.videoId = v.id
+                      JOIN usuarios u 
+                      ON  u.id = v.usuarioId
+                      JOIN equipos e ON ev.equipoId = e.id
+                      AND v.visto = 0 AND ev.equipoId = ` + idEquipo + 
+                      ` AND u.nombreusuario LIKE '%`+ texto + `%'
+                      OR u.apellidousuario LIKE '%` + texto + `%'
+                      OR v.titulo LIKE '%` + texto + `%'
+                      OR v.descripcion LIKE '%` + texto + `%'
+                       GROUP BY v.id`, {
+      type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Error al obtener los equipos.",
+      });
+    });
+};
+
+exports.buscarVideosVistos = (req, res) => {
+  const idEquipo = req.params.equipoId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+                      FROM equipo_videos ev JOIN videos v
+                      ON ev.videoId = v.id
+                      JOIN usuarios u 
+                      ON  u.id = v.usuarioId
+                      JOIN equipos e ON ev.equipoId = e.id
+                      AND v.visto = 1  AND ev.equipoId = ` + idEquipo + 
                       ` AND u.nombreusuario LIKE '%`+ texto + `%'
                       OR u.apellidousuario LIKE '%` + texto + `%'
                       OR v.titulo LIKE '%` + texto + `%'
@@ -187,6 +245,46 @@ exports.buscarVideoDeUsuario = (req, res) => {
   const usuarioId = req.params.usuarioId;
   const texto = req.params.texto;
   sequelize.query(`SELECT id, url, imagen, titulo, descripcion, createdAt  FROM videos  WHERE usuarioId =` + usuarioId +
+                    ` AND titulo LIKE '%` + texto + `%'  OR ` +
+                    ` descripcion LIKE '%` + texto + `%'`, {
+type: Sequelize.QueryTypes.SELECT,
+})
+.then((data) => {
+res.send(data);
+})
+.catch((err) => {
+res.status(500).send({
+message:
+err.message ||
+"No se encontraron videos.",
+});
+});
+}
+
+exports.buscarVideoNuevosDeUsuario = (req, res) => {
+  const usuarioId = req.params.usuarioId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT id, url, imagen, titulo, descripcion, createdAt  FROM videos  WHERE visto = 0 AND usuarioId =` + usuarioId +
+                    ` AND titulo LIKE '%` + texto + `%'  OR ` +
+                    ` descripcion LIKE '%` + texto + `%'`, {
+type: Sequelize.QueryTypes.SELECT,
+})
+.then((data) => {
+res.send(data);
+})
+.catch((err) => {
+res.status(500).send({
+message:
+err.message ||
+"No se encontraron videos.",
+});
+});
+}
+
+exports.buscarVideoVistosDeUsuario = (req, res) => {
+  const usuarioId = req.params.usuarioId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT id, url, imagen, titulo, descripcion, createdAt  FROM videos  WHERE visto = 1 AND usuarioId =` + usuarioId +
                     ` AND titulo LIKE '%` + texto + `%'  OR ` +
                     ` descripcion LIKE '%` + texto + `%'`, {
 type: Sequelize.QueryTypes.SELECT,

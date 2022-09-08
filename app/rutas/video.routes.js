@@ -106,12 +106,32 @@ module.exports = function(app) {
      controlador.buscarVideos
      );
 
+     app.get('/api/video/buscarVideosNuevos/:equipoId/:texto',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.buscarVideoNuevosDeUsuario
+     );
+
+     app.get('/api/video/buscarVideosVistos/:equipoId/:texto',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.buscarVideoVistosDeUsuario
+     );
+
+     app.get('/api/video/videosNoVistos/:equipoId',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.buscarVideosNoVistos
+     );
+
+     app.get('/api/video/videosVistos/:equipoId',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.buscarVideosVistos
+     );
+
      app.get('/api/video/listarVideos/:usuarioId',
      [authJwt.verificarToken, authJwt.esUsuarioComun],
      controlador.listarVideoPorUsuario);
 
      app.get('/api/video/buscarVideosUsuario/:usuarioId/:texto',
-    
+     [authJwt.verificarToken, authJwt.esUsuarioComun],
      controlador.buscarVideoDeUsuario);
 };
 
