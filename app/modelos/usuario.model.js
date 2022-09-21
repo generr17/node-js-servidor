@@ -27,7 +27,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       suscrito: {
         type: Sequelize.INTEGER
-      }
+      },
+      activo: {
+        type: Sequelize.INTEGER
+      }      
     });
     return Usuario;
   };

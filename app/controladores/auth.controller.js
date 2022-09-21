@@ -76,6 +76,7 @@ exports.singin = (req, res) => {
                  rolusuario: rol,
                  equipoId: usuario.equipoId,
                  suscrito: usuario.suscrito,
+                 activo: usuario.activo,
                  accessToken: token
              });
          
