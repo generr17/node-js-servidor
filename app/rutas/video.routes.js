@@ -106,6 +106,11 @@ module.exports = function(app) {
      controlador.buscarVideos
      );
 
+     app.get('/api/video/buscarVideosPorTipo/:equipoId/:texto',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.buscarVideosPorDescripcion
+     );
+
      app.get('/api/video/buscarVideosNuevos/:equipoId/:texto',
      [authJwt.verificarToken, authJwt.esDirectivo],
      controlador.buscarVideoNuevosDeUsuario
@@ -123,7 +128,7 @@ module.exports = function(app) {
 
      app.get('/api/video/videosVistos/:equipoId',
      [authJwt.verificarToken, authJwt.esDirectivo],
-     controlador.buscarVideosVistos
+     controlador.listarVideosNoVistos
      );
 
      app.get('/api/video/listarVideos/:usuarioId',
@@ -133,5 +138,20 @@ module.exports = function(app) {
      app.get('/api/video/buscarVideosUsuario/:usuarioId/:texto',
      [authJwt.verificarToken, authJwt.esUsuarioComun],
      controlador.buscarVideoDeUsuario);
+
+     
+
+     app.get('/api/video/listarVideosVistos/:equipoId',
+     //[authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.listarVideosVistos);
+
+     app.get('/api/video/listarVideosNoVistos/:equipoId',
+     //[authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.listarVideosNoVistos);
+    
+     app.put('/api/video/actualizarEstado',
+     [authJwt.verificarToken, authJwt.esDirectivo],
+     controlador.actualizarEstadoVideo);
+
 };
 

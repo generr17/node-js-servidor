@@ -29,8 +29,8 @@ const Suscripcion = bd.suscripcion;
 
 const dbConfig = require("./app/configuracion/db.config");
 const controlador = require("./app/controladores/usuario.controller");
-
-/*bd.sequelize.sync({force: true}).then (() => {
+/*
+bd.sequelize.sync({force: true}).then (() => {
   console.log("Drop and Resync db");
   inicio();
 }); */

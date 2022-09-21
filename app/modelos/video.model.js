@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
      descripcion: {
       type: Sequelize.STRING
      },
-     visto: {
+     usuarioId: {
       type: Sequelize.INTEGER
      }
     });

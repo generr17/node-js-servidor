@@ -6,6 +6,7 @@ const Video = bd.video;
 const Equipo = bd.equipo;
 const Suscripcion = bd.suscripcion;
 const Op = bd.Sequelize.Op;
+const Equipo_Videos = bd.equipo_videos;
 const fs = require('fs');
 const Sequelize = require("sequelize");
 const dbConfig = require("../configuracion/db.config.js");
@@ -99,7 +100,7 @@ exports.reproducirVideo = (req, res) => {
 
 exports.listarVideos = (req, res) => {
   const idEquipo = req.params.equipoId;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.id as videoId
                     FROM equipo_videos ev JOIN videos v
                     ON ev.videoId = v.id
                     JOIN usuarios u 
@@ -138,17 +139,17 @@ exports.listarSuscripciones = (req, res) => {
 exports.buscarVideos = (req, res) => {
   const idEquipo = req.params.equipoId;
   const texto = req.params.texto;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.visto
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.id as videoId
                       FROM equipo_videos ev JOIN videos v
                       ON ev.videoId = v.id
                       JOIN usuarios u 
                       ON  u.id = v.usuarioId
                       JOIN equipos e ON ev.equipoId = e.id
-                      AND ev.equipoId = ` + idEquipo + 
-                      ` AND u.nombreusuario LIKE '%`+ texto + `%'
+                      AND (u.nombreusuario LIKE '%`+ texto + `%'
                       OR u.apellidousuario LIKE '%` + texto + `%'
                       OR v.titulo LIKE '%` + texto + `%'
-                      OR v.descripcion LIKE '%` + texto + `%'
+                      OR v.descripcion LIKE '%` + texto + `%')
+                      AND ev.equipoId = ` + idEquipo + `
                        GROUP BY v.id`, {
       type: Sequelize.QueryTypes.SELECT,
     })
@@ -167,7 +168,7 @@ exports.buscarVideos = (req, res) => {
 exports.buscarVideosNoVistos = (req, res) => {
   const idEquipo = req.params.equipoId;
   const texto = req.params.texto;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.id as videoId
                       FROM equipo_videos ev JOIN videos v
                       ON ev.videoId = v.id
                       JOIN usuarios u 
@@ -196,7 +197,7 @@ exports.buscarVideosNoVistos = (req, res) => {
 exports.buscarVideosVistos = (req, res) => {
   const idEquipo = req.params.equipoId;
   const texto = req.params.texto;
-  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.id as videoId
                       FROM equipo_videos ev JOIN videos v
                       ON ev.videoId = v.id
                       JOIN usuarios u 
@@ -301,3 +302,101 @@ err.message ||
 });
 }
 
+
+exports.listarVideosNoVistos = (req, res) => {
+  const idEquipo = req.params.equipoId;
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, ev.visto, v.id as videoId
+                    FROM equipo_videos ev JOIN videos v
+                    ON ev.videoId = v.id
+                    JOIN usuarios u 
+                    ON  u.id = v.usuarioId
+                    JOIN equipos e ON ev.equipoId = e.id
+                    AND ev.visto = 0 AND ev.equipoId = 
+            ` + idEquipo, {
+      type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Error al obtener los videos",
+      });
+    });
+};
+
+exports.listarVideosVistos = (req, res) => {
+  const idEquipo = req.params.equipoId;
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, ev.visto, v.id as videoId
+                    FROM equipo_videos ev JOIN videos v
+                    ON ev.videoId = v.id
+                    JOIN usuarios u 
+                    ON  u.id = v.usuarioId
+                    JOIN equipos e ON ev.equipoId = e.id
+                    AND ev.visto = 1 AND ev.equipoId = 
+            ` + idEquipo, {
+      type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Error al obtener los equipos.",
+      });
+    });
+};
+
+exports.buscarVideosPorDescripcion = (req, res) => {
+  const idEquipo = req.params.equipoId;
+  const texto = req.params.texto;
+  sequelize.query(`SELECT  u.id, u.nombreusuario, u.apellidousuario, v.url, v.imagen, v.createdAt, v.titulo, v.descripcion, v.id as videoId
+                      FROM equipo_videos ev JOIN videos v
+                      ON ev.videoId = v.id
+                      JOIN usuarios u 
+                      ON  u.id = v.usuarioId
+                      JOIN equipos e ON ev.equipoId = e.id
+                      AND ev.equipoId = ` + idEquipo + 
+                      ` AND v.descripcion LIKE '%` + texto + `%'
+                       GROUP BY v.id`, {
+      type: Sequelize.QueryTypes.SELECT,
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Error al obtener los equipos.",
+      });
+    });
+};
+
+exports.actualizarEstadoVideo = (req, res) => {
+
+  Equipo_Videos.update({
+       visto: 1,
+    },
+    {
+       where: {
+        videoId: req.body.videoId,
+        equipoId: req.body.equipoId
+       }
+    }
+    )
+    .then((mensaje) => {
+        res.send({message: "Datos actualizados exitosamente"});
+        return mensaje;
+      })
+      .catch((err) => {
+        console.log(">> Error mientras se actualizaban los datos: ", err);
+      })
+      .catch(err => {
+          res.status(500).send({message: err.message});
+      });
+}

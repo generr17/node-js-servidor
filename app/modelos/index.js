@@ -1,6 +1,7 @@
 const configuracion = require("../configuracion/db.config.js");
 const Sequelize = require("sequelize");
 const dbConfig = require("../configuracion/db.config.js");
+const DataTypes = require('sequelize/lib/data-types');
 const sequelize = new Sequelize(
   configuracion.DB,
   configuracion.USER,
@@ -18,6 +19,10 @@ const sequelize = new Sequelize(
   }
 );
 
+const Equipo_videos = sequelize.define("equipo_videos",{
+  visto: { type: DataTypes.INTEGER,
+            defaultValue: 0   }
+ });
 const bd = {};
 bd.Sequelize = Sequelize;
 bd.sequelize = sequelize;
@@ -32,7 +37,7 @@ bd.suscripcion = require("../modelos/suscripcion.model.js")(sequelize, Sequelize
 bd.usuario_suscripcion = require("../modelos/usuario_suscripcion.model.js")(sequelize, Sequelize);
 bd.mensaje = require("../modelos/mensaje.model.js")(sequelize, Sequelize);
 bd.chatRoom = require("../modelos/chat_room.model.js")(sequelize, Sequelize);
-
+bd.equipo_videos = Equipo_videos;
 bd.rol.hasMany(bd.usuario, {
   foreignKey: 'roleId'
 });
@@ -53,7 +58,7 @@ bd.usuario.hasMany(bd.video, {
 });
 
 bd.video.belongsTo(bd.usuario);
-
+/*
 bd.equipo.belongsToMany(bd.video, {
   through: "equipo_videos",
   foreignKey: "equipoId",
@@ -64,6 +69,9 @@ bd.video.belongsToMany(bd.equipo, {
   foreignKey: "videoId",
   otherKey: "equipoId"
 });
+*/
+bd.equipo.belongsToMany(bd.video, { through: Equipo_videos  });
+bd.video.belongsToMany(bd.equipo, { through: Equipo_videos  });
 
 bd.usuario.hasMany(bd.usuario_habilidad, {
   foreignKey:'usuarioId'

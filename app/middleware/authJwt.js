@@ -33,6 +33,7 @@ esAdministrador = (req, res, next) => {
 
 esDirectivo = (req, res, next) => {
     Usuario.findByPk(req.usuarioId).then(usuario => {
+        console.log(usuario);
         if (usuario.roleId === 2){
             next();
             return;
