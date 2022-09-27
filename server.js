@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 bodyParser = require('body-parser');
 const app = express();
-
+const cron = require('node-cron');
 
 var corsOptions = {
   origin: "http://localhost:4200"
@@ -25,6 +25,7 @@ const Rol = bd.rol;
 const Serie = bd.serie;
 const Habilidad = bd.habilidad;
 const Suscripcion = bd.suscripcion;
+const Usuario = bd.usuario;
 
 
 const dbConfig = require("./app/configuracion/db.config");
@@ -113,8 +114,42 @@ app.get("/", (req, res) => {
   res.json({ message: "Bienvenido a la aplicacion"});
 });
 
+cron.schedule('0 0 * * *', function(){
+  console.log("Tarea ejecutandose");
+  const date = new Date();
+  const day = date.getDay();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const fullYear = year+"-"+month+"-"+day; 
+  sequelize.query(`UPDATE usuarios AS u
+                    JOIN usuario_suscripcions AS us
+                    ON u.id = us.usuarioId
+                    SET u.suscrito = 0
+                    WHERE
+                    Cast(us.fechaFin As Date)  = 
+              ` + fullYear, {
+        type: Sequelize.QueryTypes.SELECT,
+      })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message ||
+            "Error al obtener los equipos.",
+        });
+      });
+  //console.log("tarea corriendo, ", fullYear);
+})
 
-
+cron.schedule('* * * * *', function(){
+  const query = `SELECT COUNT(v.id), u.id
+  FROM videos v
+  JOIN usuarios u
+  ON u.id = v.usuarioId
+  GROUP BY u.id`;
+})
 
 require('./app/rutas/auth.routes')(app);
 require('./app/rutas/usuario.routes')(app);
