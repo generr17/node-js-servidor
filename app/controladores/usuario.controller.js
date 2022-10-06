@@ -87,6 +87,35 @@ exports.actualizar= (req, res) => {
    
 }
 
+exports.actualizarEstado= (req, res) => {
+  const id = req.params.id;
+
+      console.log("Actualizar estado: ");
+      Usuario.update(
+          {
+              activo : 1
+          },
+          {where: { id:id}}
+      )
+      .then((num) => {
+          if(num == 1) {
+              res.send({
+                  message: "Usuario actualizado correctamente",
+              });
+          }else {
+              res.send({
+                  message: "No se puede actualizar el usuario",
+              });
+          }
+         })
+          .catch((err) => {
+          console.log(">> Error mientras se actualizaba el usuario: ", err);
+          res.status(500).send({message: err.message});
+      });
+  
+ 
+}
+
 exports.obtenerUsuario= (req, res)=> {
     const id = req.params.id;
    Usuario.findByPk(id)

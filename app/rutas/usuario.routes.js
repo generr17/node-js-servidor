@@ -26,6 +26,11 @@ module.exports = function(app) {
         controlador.usuarioComun
     );
 
+    app.put("/api/test/Actualizar/:id",
+    [authJwt.verificarToken, authJwt.esUsuarioComun],
+        controlador.actualizarEstado
+    ); 
+
     app.put("/api/test/editar/:id",
     [authJwt.verificarToken, authJwt.estaLogeado],
         controlador.actualizar

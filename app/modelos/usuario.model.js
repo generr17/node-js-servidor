@@ -29,7 +29,8 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER
       },
       activo: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue:1
       }      
     });
     return Usuario;
