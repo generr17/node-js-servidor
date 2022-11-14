@@ -8,6 +8,7 @@ var bcrypt = require("bcryptjs");
 const Sequelize = require("sequelize");
 const configurac = require("../configuracion/db.config.js");
 const { habilidad } = require("../modelos");
+const { NUMBER } = require("sequelize/lib/data-types");
 
 const sequelize = new Sequelize(
     configurac.DB,
@@ -258,7 +259,7 @@ exports.actualizarEstadoSuscripcion= (req, res) => {
           {where: { id:id}}
       )
       .then((num) => {
-          if(num == 1) {
+          if(num > 0) {
               res.send({
                   message: "Usuario actualizado correctamente",
               });
@@ -275,3 +276,54 @@ exports.actualizarEstadoSuscripcion= (req, res) => {
   }
  
 }
+
+exports.actualizarEstadoUsuario = (req, res) => {
+  var date = new Date();
+  var local_fecha = date.toLocaleDateString();
+  const fecha = local_fecha.split('/');
+  var mes = fecha[1] -1;
+  const fechaActual = fecha[2] +'-'+ fecha[1] + '-' + fecha[0];
+  const fechaInicial = fecha[2]+'-'+ mes +'-' + '01';
+  console.log(mes);
+sequelize.query(`UPDATE usuarios u SET u.activo = 0 
+                WHERE (SELECT count(*)
+                                    FROM videos v
+                                    WHERE CAST(createdAt AS DATE) BETWEEN ` + fechaInicial + ` AND ` + fechaActual +
+                                  ` AND v.usuarioId = u.id) < 1
+                AND u.roleId = 3` , {
+      type: Sequelize.QueryTypes.UPDATE,
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+     
+      console.log("Error al obtener las habilidades del usuario", err.message);
+      });
+}
+
+exports.actualizarEstadoSuscrito = (req, res) => {
+  var date = new Date();
+  var local_fecha = date.toLocaleDateString();
+  const fecha = local_fecha.split('/');
+  const fechaActual = fecha[2] +'-'+ fecha[1] + '-' + fecha[0];
+  sequelize.query(`UPDATE usuarios u SET u.suscrito = 0
+                  WHERE u.id = ( SELECT s.usuarioId
+                              FROM usuario_suscripcions s
+                              WHERE CAST(fechaFin As DATE) = '` 
+                              + fechaActual  + `' 
+                              AND s.usuarioId = u.id ) 
+                              AND u.roleId = 2`
+                           , {
+      type: Sequelize.QueryTypes.UPDATE,
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+     
+      console.log("Error al actualizar el estado del usuario", err.message);
+      });
+}
+
+

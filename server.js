@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-
+const { QueryTypes } = require('sequelize');
 app.use(express.static('imagenes'));
 
 const bd = require("./app/modelos");
@@ -26,10 +26,9 @@ const Serie = bd.serie;
 const Habilidad = bd.habilidad;
 const Suscripcion = bd.suscripcion;
 const Usuario = bd.usuario;
+const Video = bd.video;
+const controler = require("./app/controladores/usuario.controller.js");
 
-
-const dbConfig = require("./app/configuracion/db.config");
-const controlador = require("./app/controladores/usuario.controller");
 /*
 bd.sequelize.sync({force: true}).then (() => {
   console.log("Drop and Resync db");
@@ -115,41 +114,26 @@ app.get("/", (req, res) => {
 });
 
 cron.schedule('0 0 * * *', function(){
-  console.log("Tarea ejecutandose");
-  const date = new Date();
-  const day = date.getDay();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  const fullYear = year+"-"+month+"-"+day; 
-  sequelize.query(`UPDATE usuarios AS u
-                    JOIN usuario_suscripcions AS us
-                    ON u.id = us.usuarioId
-                    SET u.suscrito = 0
-                    WHERE
-                    Cast(us.fechaFin As Date)  = 
-              ` + fullYear, {
-        type: Sequelize.QueryTypes.SELECT,
-      })
-      .then((data) => {
-        console.log(data)
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message:
-            err.message ||
-            "Error al obtener los equipos.",
-        });
-      });
-  //console.log("tarea corriendo, ", fullYear);
+ 
+ 
+  controler.actualizarEstadoSuscrito();
+  
+  console.log("Tarea ejecutandose")
+   
+   
+  })
+
+  
+cron.schedule('0 0 28 * *', function(){
+ 
+controler.actualizarEstadoUsuario();
+
+console.log("Tarea actualizandose")
+ 
+ 
 })
 
-cron.schedule('* * * * *', function(){
-  const query = `SELECT COUNT(v.id), u.id
-  FROM videos v
-  JOIN usuarios u
-  ON u.id = v.usuarioId
-  GROUP BY u.id`;
-})
+
 
 require('./app/rutas/auth.routes')(app);
 require('./app/rutas/usuario.routes')(app);

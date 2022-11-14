@@ -1,6 +1,8 @@
 
 const {authJwt} = require("../middleware");
 const multer = require('multer');
+var ffprobe = require('ffprobe');
+var ffprobeStatic = require('ffprobe-static');
 
 path = require('path');
 const PATH ='./videos';
@@ -37,17 +39,30 @@ module.exports = function(app) {
     app.post('/api/video/subir',
          upload.single('video'), function (req, res) {
         if(!req.file) {
+           
             console.log("Archivo no válido");
             return res.send({
                 success: false
             });
 
         }else{
+
             console.log('Archivo válido');
+            const url2= req.file.path;
+           ffprobe(url2, { path: ffprobeStatic.path }, function(err, info){
+                if(err){
+                    console.log(err);
+                }else{
+                    console.log("Informacion del video", info);
+                    let segConvertidos = convertirSegAMin(info.streams[0].duration);
+                    console.log(segConvertidos);
+                }
+            });
             console.log(req.file);
             const url=req.file.filename;
             console.log(req.file.path);
              let videoUrl =req.file.path;
+             
              const filename =Date.now() + `-imagen`;
              var im  =  ffmpegCommand(videoUrl)
                     .seekInput("00:00:30.000")
@@ -81,6 +96,12 @@ module.exports = function(app) {
          
         }
     });
+
+    let convertirSegAMin = (seconds) => {
+        let minutos = 60;
+        let resultado = seconds/ minutos;
+        return resultado;
+    }
 
     app.post('/api/video/guardar',
     [authJwt.verificarToken],

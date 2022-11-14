@@ -106,6 +106,7 @@ exports.listarVideos = (req, res) => {
                     JOIN usuarios u 
                     ON  u.id = v.usuarioId
                     JOIN equipos e ON ev.equipoId = e.id
+                    WHERE u.activo = 1
                     AND ev.equipoId = 
             ` + idEquipo, {
       type: Sequelize.QueryTypes.SELECT,
@@ -145,6 +146,7 @@ exports.buscarVideos = (req, res) => {
                       JOIN usuarios u 
                       ON  u.id = v.usuarioId
                       JOIN equipos e ON ev.equipoId = e.id
+                      WHERE u.activo = 1
                       AND (u.nombreusuario LIKE '%`+ texto + `%'
                       OR u.apellidousuario LIKE '%` + texto + `%'
                       OR v.titulo LIKE '%` + texto + `%'
@@ -174,6 +176,7 @@ exports.buscarVideosNoVistos = (req, res) => {
                       JOIN usuarios u 
                       ON  u.id = v.usuarioId
                       JOIN equipos e ON ev.equipoId = e.id
+                      WHERE u.activo = 1
                       AND v.visto = 0 AND ev.equipoId = ` + idEquipo + 
                       ` AND u.nombreusuario LIKE '%`+ texto + `%'
                       OR u.apellidousuario LIKE '%` + texto + `%'
@@ -203,6 +206,7 @@ exports.buscarVideosVistos = (req, res) => {
                       JOIN usuarios u 
                       ON  u.id = v.usuarioId
                       JOIN equipos e ON ev.equipoId = e.id
+                      WHERE u.activo = 1
                       AND v.visto = 1  AND ev.equipoId = ` + idEquipo + 
                       ` AND u.nombreusuario LIKE '%`+ texto + `%'
                       OR u.apellidousuario LIKE '%` + texto + `%'
@@ -311,6 +315,7 @@ exports.listarVideosNoVistos = (req, res) => {
                     JOIN usuarios u 
                     ON  u.id = v.usuarioId
                     JOIN equipos e ON ev.equipoId = e.id
+                    WHERE u.activo = 1
                     AND ev.visto = 0 AND ev.equipoId = 
             ` + idEquipo, {
       type: Sequelize.QueryTypes.SELECT,
@@ -335,6 +340,7 @@ exports.listarVideosVistos = (req, res) => {
                     JOIN usuarios u 
                     ON  u.id = v.usuarioId
                     JOIN equipos e ON ev.equipoId = e.id
+                    WHERE u.activo = 1
                     AND ev.visto = 1 AND ev.equipoId = 
             ` + idEquipo, {
       type: Sequelize.QueryTypes.SELECT,
@@ -360,6 +366,7 @@ exports.buscarVideosPorDescripcion = (req, res) => {
                       JOIN usuarios u 
                       ON  u.id = v.usuarioId
                       JOIN equipos e ON ev.equipoId = e.id
+                      WHERE u.activo = 1
                       AND ev.equipoId = ` + idEquipo + 
                       ` AND v.descripcion LIKE '%` + texto + `%'
                        GROUP BY v.id`, {
