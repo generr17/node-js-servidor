@@ -49,57 +49,64 @@ module.exports = function(app) {
 
             console.log('Archivo válido');
             const url2= req.file.path;
+            let segConvertidos = 0;
            ffprobe(url2, { path: ffprobeStatic.path }, function(err, info){
                 if(err){
                     console.log(err);
+                    return res.send(err);
                 }else{
                     console.log("Informacion del video", info);
-                    let segConvertidos = convertirSegAMin(info.streams[0].duration);
-                    console.log(segConvertidos);
+                    segConvertidos = convertirSegAMin(info.streams[0].duration);
+                    console.log(segConvertidos)
+                    if(segConvertidos === 3){
+                        console.log(req.file);
+                        const url=req.file.filename;
+                        console.log(req.file.path);
+                         let videoUrl =req.file.path;
+                         
+                         const filename =Date.now() + `-imagen`;
+                         var im  =  ffmpegCommand(videoUrl)
+                                .seekInput("00:00:30.000")
+                                .outputOptions([
+                                    "-q:v",
+                                    "8",
+                                    "-frames:v",
+                                    "1",
+                                    "-vsync",
+                                    "0",
+                                    "-qscale",
+                                    "50",
+                                    "-vf",
+                                    "fps=1/10,scale=500:300,tile=1x1",
+                                ])
+                                .addOption("-preset", "superfast")
+                                .on("error", (err) => {
+                                    console.log("error", err);
+                                    reject(err);
+                                })
+            
+                                .save(`./imagenes/${filename}.png`);
+                                 
+                               
+                        return res.send({
+                            success: true,
+                            message: url,
+                            imagenUrl:`${filename}.png`
+                        });
+                    }else {
+                        success=false;
+                        message="La duración del video debe ser igual a 3 minutos"
+                        return res.send({message, success});
+                    }
                 }
             });
-            console.log(req.file);
-            const url=req.file.filename;
-            console.log(req.file.path);
-             let videoUrl =req.file.path;
-             
-             const filename =Date.now() + `-imagen`;
-             var im  =  ffmpegCommand(videoUrl)
-                    .seekInput("00:00:30.000")
-                    .outputOptions([
-                        "-q:v",
-                        "8",
-                        "-frames:v",
-                        "1",
-                        "-vsync",
-                        "0",
-                        "-qscale",
-                        "50",
-                        "-vf",
-                        "fps=1/10,scale=500:300,tile=1x1",
-                    ])
-                    .addOption("-preset", "superfast")
-                    .on("error", (err) => {
-                        console.log("error", err);
-                        reject(err);
-                    })
-
-                    .save(`./imagenes/${filename}.png`);
-                     
-                   
-            return res.send({
-                success: true,
-                message: url,
-                imagenUrl:`${filename}.png`
-            });
-            
-         
+           
         }
     });
 
     let convertirSegAMin = (seconds) => {
         let minutos = 60;
-        let resultado = seconds/ minutos;
+        let resultado = Math.round(seconds/ minutos);
         return resultado;
     }
 
