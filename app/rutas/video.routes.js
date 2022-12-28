@@ -3,7 +3,7 @@ const {authJwt} = require("../middleware");
 const multer = require('multer');
 var ffprobe = require('ffprobe');
 var ffprobeStatic = require('ffprobe-static');
-
+const fs = require('fs');
 path = require('path');
 const PATH ='./videos';
 
@@ -46,8 +46,10 @@ module.exports = function(app) {
             });
 
         }else{
-
+           
             console.log('Archivo válido');
+            const path = './videos/'+req.file.filename;
+          
             const url2= req.file.path;
             let segConvertidos = 0;
            ffprobe(url2, { path: ffprobeStatic.path }, function(err, info){
@@ -94,6 +96,7 @@ module.exports = function(app) {
                             imagenUrl:`${filename}.png`
                         });
                     }else {
+                       fs.unlinkSync(path);
                         success=false;
                         message="La duración del video debe ser igual a 3 minutos"
                         return res.send({message, success});
