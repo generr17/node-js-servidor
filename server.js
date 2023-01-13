@@ -5,7 +5,7 @@ const app = express();
 const cron = require('node-cron');
 
 var corsOptions = {
-  origin: "https://futsite.online/"
+  origin: ["https://futsite.online/","http://futsite.online/"]
 };
 app.use(cors(corsOptions));
 
